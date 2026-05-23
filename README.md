@@ -16,17 +16,9 @@ In this repository, “fixed operator specification” means that the FFD implem
 
 ## Formal Hypothesis
 
-For each feature \(j\), let \(d^{*}_{j,k}\) denote the minimum admissible fixed-width fractional differencing order estimated on segment \(k\), for \(k = 1, \dots, K\). The feature-level null hypothesis of segmental invariance is
+For each feature, the null hypothesis is that the minimum admissible fixed-width fractional differencing order remains constant across the segments induced by the volatility-state partition. The corresponding test statistic is the maximum pairwise absolute difference between segment-specific selected orders.
 
-\[
-H_{0,j}: d^{*}_{j,1} = d^{*}_{j,2} = \cdots = d^{*}_{j,K}.
-\]
-
-The associated sample statistic is defined as
-
-\[
-T_j = \max_{1 \leq k < l \leq K} \left| d^{*}_{j,k} - d^{*}_{j,l} \right|.
-\]
+The mathematical statement is provided in `docs/methodology.md`.
 
 Inference is conducted by bootstrap under fixed train-segment boundaries. The public repository reports anonymised registry outputs and bucketed bootstrap evidence only; raw p-values and private calibration settings are excluded from release.
 
