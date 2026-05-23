@@ -1,0 +1,15 @@
+*.xlsx
+*.xls
+*.parquet
+*.pkl
+*.html
+*.docx
+outputs/
+results_private/
+private/
+manuscript_private/
+*_private.ipynb
+*p1_ffd_invariance*
+*FEATURE_CLASS_MAP*
+*feature_map*
+*decoder*.DS_Store
