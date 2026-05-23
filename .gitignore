@@ -13,3 +13,6 @@ manuscript_private/
 *FEATURE_CLASS_MAP*
 *feature_map*
 *decoder*.DS_Store
+
+__pycache__/
+*.pyc
