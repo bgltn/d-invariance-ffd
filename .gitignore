@@ -16,3 +16,8 @@ manuscript_private/
 
 __pycache__/
 *.pyc
+
+# Python packaging artefacts
+*.egg-info/
+build/
+dist/
