@@ -129,3 +129,8 @@ The reusable public modules are documented here:
 - `docs/research_mapping.md` — mapping between the research design and source code.
 
 The public source code exposes methodology utilities only. It does not include private data, private feature names, raw paths, empirical calibration values, forecasting target logic, or OOS model code.
+
+## Synthetic Example
+
+A public-safe synthetic example is available at `examples/synthetic_d_invariance.py`.
+It demonstrates segment construction, `d*` estimation, and the d-invariance statistic without private data or empirical calibration.
