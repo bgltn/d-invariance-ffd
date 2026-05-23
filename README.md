@@ -120,3 +120,12 @@ A `CITATION.cff` file will be provided before public release.
 Code: Apache 2.0.  
 Documentation and public manuscript material: CC BY 4.0 unless otherwise stated.  
 Private data, private notebooks, and confidential manuscript drafts are excluded. 
+
+## Public API
+
+The reusable public modules are documented here:
+
+- `docs/public_api.md` — public-safe module interface.
+- `docs/research_mapping.md` — mapping between the research design and source code.
+
+The public source code exposes methodology utilities only. It does not include private data, private feature names, raw paths, empirical calibration values, forecasting target logic, or OOS model code.
