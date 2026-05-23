@@ -33,31 +33,19 @@ def build_segments_from_boundaries(
     if min_obs <= 0:
         raise ValueError("min_obs must be positive.")
 
-    boundary_dates = sorted(pd.Timestamp(b) for b in boundaries)
+    boundary_positions = sorted(index.get_loc(pd.Timestamp(b)) for b in boundaries)
 
-    for boundary in boundary_dates:
-        if boundary not in index:
-            raise ValueError(f"Boundary not found in index: {boundary}")
+    if any(pos == 0 for pos in boundary_positions):
+        raise ValueError("Boundary cannot be the first index value.")
 
-    split_points = [index[0], *boundary_dates, index[-1]]
+    cuts = [0, *boundary_positions, len(index)]
     segments: list[Segment] = []
 
-    for i in range(len(split_points) - 1):
-        start = split_points[i]
-        end = split_points[i + 1]
+    for i in range(len(cuts) - 1):
+        start_pos = cuts[i]
+        end_pos = cuts[i + 1]
 
-        if i > 0:
-            start_pos = index.get_loc(start)
-        else:
-            start_pos = 0
-
-        end_pos = index.get_loc(end)
-
-        if i > 0:
-            segment_index = index[start_pos : end_pos + 1]
-        else:
-            segment_index = index[start_pos : end_pos + 1]
-
+        segment_index = index[start_pos:end_pos]
         n_obs = len(segment_index)
 
         if n_obs < min_obs:
