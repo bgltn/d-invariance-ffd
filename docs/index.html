@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Talita Niero — Research</title>
+<meta name="description" content="Independent research on the stability of the selected order of the Fixed-width Fractional Differencing operator across volatility-conditioned segments.">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #666666;
+    --rule: #d9d9d9;
+    --code-bg: #f5f5f5;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 16px; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4.5rem 2rem 6rem;
+  }
+
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .role {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 0.6rem;
+  }
+
+  .links {
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .links a {
+    margin-right: 0.9rem;
+  }
+
+  h2 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--fg);
+    margin: 2.5rem 0 0.75rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.4rem;
+  }
+
+  p {
+    margin: 0 0 0.95rem;
+    text-align: left;
+  }
+
+  a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-thickness: 0.05em;
+    text-underline-offset: 0.18em;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--fg);
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .status-pill {
+    display: inline-block;
+    color: var(--muted);
+    padding: 0;
+    font-size: 0.72rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: 0.04em;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .equation {
+    background: var(--code-bg);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0 1.25rem;
+    overflow-x: auto;
+    border-left: 1px solid var(--fg);
+    font-size: 0.95rem;
+  }
+
+  ul.refs {
+    list-style: none;
+    padding-left: 0;
+    margin: 0.5rem 0 1rem;
+  }
+
+  ul.refs li {
+    font-size: 0.9rem;
+    margin-bottom: 0.85rem;
+    padding-left: 1.5rem;
+    text-indent: -1.5rem;
+  }
+
+  ul.refs li .note {
+    display: block;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-top: 0.15rem;
+    padding-left: 0;
+    text-indent: 0;
+  }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.82rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.08em 0.3em;
+  }
+
+  @media (max-width: 480px) {
+    main { padding: 2.5rem 1.1rem 4rem; }
+    h1 { font-size: 1.25rem; }
+    .links a { display: inline-block; margin-bottom: 0.3rem; }
+  }
+</style>
+</head>
+
+<body>
+<main>
+
+  <header>
+    <h1>Talita Niero</h1>
+    <p class="role">Quantitative finance · time-series methodology</p>
+    <p class="links">
+      <a href="mailto:ttniero@gmail.com">Email</a>
+      <a href="https://github.com/bgltn/d-invariance-ffd">GitHub</a>
+    </p>
+  </header>
+
+  <section>
+    <h2>Research statement</h2>
+    <p>
+      Financial models depend on transformations applied before estimation. This research studies one such transformation: the fractional differencing operator used to construct stationary features from persistent financial time series.
+    </p>
+    <p>
+      The central question is operational. A preprocessing rule should remove non-stationarity without erasing the dependence structure that may carry information. If the volatility environment changes, a single transformation calibrated on a long sample may fail on both margins: it may under-transform one segment and over-transform another. This project treats that boundary as an operator-selection problem.
+    </p>
+  </section>
+
+  <section>
+    <h2>Current project
+      <span class="status-pill">research in progress</span>
+    </h2>
+
+    <h3>Stability of the selected order of the Fixed-width Fractional Differencing operator</h3>
+
+    <div class="meta-row">
+      <span><strong>Method:</strong> nonparametric segmentation, fractional differencing</span>
+    </div>
+
+    <p>
+      The fractional differencing operator \((1-L)^d\) generalises integer differencing to non-integer orders (Granger and Joyeux, 1980; Hosking, 1981). Its weights decay rather than terminate, so the operator can reduce non-stationarity while retaining more autocorrelation structure than first differencing. In finite samples, the infinite sequence of weights requires truncation. López de Prado (2018, Chapter 5) gives this implementation through the Fixed-width Fractional Differencing method. The method retains weights up to the largest lag \(L^*\) satisfying \(|\omega_{L^*}(d)| \geq \tau\):
+    </p>
+
+    <div class="equation">
+      \[
+      \tilde{X}_t = \sum_{k=0}^{L^*} \omega_k(d) X_{t-k},
+      \qquad
+      L^* = \max\{k \in \mathbb{N}: |\omega_k(d)| \geq \tau\}.
+      \]
+    </div>
+
+    <p>
+      In this design, \(d\) is not estimated inside a predictive model. A deterministic stationarity rule selects \(d\) before model estimation. The selected order therefore depends on the observed series and on the fixed-width specification, including the truncation threshold and the stationarity criterion.
+    </p>
+
+    <div class="equation">
+      \[
+      H_0: d_1^* = d_2^* = \cdots = d_m^*,
+      \qquad
+      H_1: \exists\, i,j \text{ such that } d_i^* \neq d_j^*.
+      \]
+    </div>
+
+    <p>
+      The hypothesis asks whether the selected order remains invariant across volatility-conditioned training segments when the operator specification is held fixed. The empirical design keeps segmentation and operator selection separate. An external volatility proxy defines training segments. A nonparametric multivariate segmentation procedure supplies internal boundaries (McGonigle and Cho, 2025). A stationary bootstrap evaluates the stability of the selected order across those training segments (Politis and Romano, 1994). Validation and test observations never enter operator selection.
+    </p>
+
+    <p>
+      A public implementation accompanies the project. The repository linked below contains a public-safe implementation of the Fixed-width Fractional Differencing procedure, boundary-consuming segmentation interfaces, tests, and synthetic examples. Results and empirical findings are reserved for the publication now in progress.
+    </p>
+
+    <p>
+      <a href="https://github.com/bgltn/d-invariance-ffd">Repository: d-invariance-ffd</a>
+    </p>
+  </section>
+
+  <section>
+    <h2>Selected references</h2>
+    <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem;">
+      The references below frame the methodological context of the current project. Each entry corresponds to a primary source consulted directly.
+    </p>
+
+    <ul class="refs">
+      <li>
+        Hosking, J. R. M. (1981). Fractional differencing. <em>Biometrika</em>, 68(1), 165–176.
+        <span class="note">Establishes the fractional differencing operator and its autocorrelation properties.</span>
+      </li>
+
+      <li>
+        Granger, C. W. J., &amp; Joyeux, R. (1980). An introduction to long-memory time series models and fractional differencing. <em>Journal of Time Series Analysis</em>, 1(1), 15–29.
+        <span class="note">Introduces fractional differencing within autoregressive fractionally integrated models.</span>
+      </li>
+
+      <li>
+        Diebold, F. X., &amp; Inoue, A. (2001). Long memory and regime switching. <em>Journal of Econometrics</em>, 105(1), 131–159.
+        <span class="note">Shows why long-memory behaviour and regime switching can be observationally close.</span>
+      </li>
+
+      <li>
+        Beran, J., &amp; Terrin, N. (1996). Testing for a change of the long-memory parameter. <em>Biometrika</em>, 83(3), 627–638.
+        <span class="note">Provides a direct precedent for testing stability in memory-related parameters.</span>
+      </li>
+
+      <li>
+        McGonigle, E. T., &amp; Cho, H. (2025). Nonparametric data segmentation in multivariate time series via joint characteristic functions. <em>Biometrika</em>, 112(2), asaf024.
+        <span class="note">Provides the segmentation method used as an external boundary-generating component.</span>
+      </li>
+
+      <li>
+        Politis, D. N., &amp; Romano, J. P. (1994). The stationary bootstrap. <em>Journal of the American Statistical Association</em>, 89(428), 1303–1313.
+        <span class="note">Provides the bootstrap procedure used for weakly dependent time series.</span>
+      </li>
+
+
+      <li>
+        Tsay, W.-J., &amp; Härdle, W. K. (2009). A generalized ARFIMA process with Markov-switching fractional differencing parameter. <em>Journal of Statistical Computation and Simulation</em>, 79(5), 731–745.
+        <span class="note">Provides a state-dependent fractional-differencing specification and motivates testing whether the selected order varies across regimes.</span>
+      </li>
+
+      <li>
+        Lipton, A., &amp; Reghai, A. (2023). SPX, VIX and scale-invariant LSV. SSRN Working Paper No. 4356976.
+        <span class="note">Motivates state-aware financial model design and the use of scale-consistent volatility representations.</span>
+      </li>
+
+      <li>
+        López de Prado, M. (2018). <em>Advances in Financial Machine Learning</em>. Wiley.
+        <span class="note">Chapter 5 introduces the Fixed-width Fractional Differencing method.</span>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Last updated: May 2026</span>
+    <span>Text: CC BY 4.0 · Code: Apache 2.0</span>
+  </footer>
+
+</main>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+
+</body>
+</html>

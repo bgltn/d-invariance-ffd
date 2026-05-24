@@ -21,3 +21,6 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+
+# GitHub Pages landing page
+!docs/index.html
