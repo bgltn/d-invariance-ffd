@@ -1,6 +1,7 @@
 # Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differencing Operator Across Volatility States Using VIX
 
 **Author:** T. Niero
+Project page: https://bgltn.github.io/d-invariance-ffd/
 
 ## Overview
 
