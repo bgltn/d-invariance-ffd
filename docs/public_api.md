@@ -29,13 +29,15 @@ The code exposes procedure, not empirical calibration. It does not include priva
 
 The operator applies finite-window fractional differencing with weights truncated by a fixed threshold. The returned weights are ordered chronologically, from the oldest retained lag to the newest observation, so they can be applied directly to a chronological rolling window.
 
+The recursive fractional-differencing coefficients are generated in newest-to-oldest order. The public function returns the reversed chronological vector required by the rolling dot product.
+
 ### Order selection
 
 - `estimate_d(series, d_grid, threshold, alpha)`
 
 The selected order `d*` is the smallest admissible value on the supplied grid that satisfies the stationarity rule implemented in `src/ffd/estimator.py`.
 
-The public repository exposes the selection rule and the callable interface. Public defaults are illustrative and are not the empirical calibration values used in the private research run.
+The public repository exposes the selection rule and callable interface. Public defaults are illustrative and are not the empirical calibration values used in the private research run.
 
 ### Invariance testing
 
@@ -80,7 +82,7 @@ This statement discloses no feature names, dates, values, calibration constants,
 
 ## Memory-preservation diagnostic
 
-The memory-preservation diagnostic is the Pearson correlation between the original indexed series and the Fixed-width Fractional Differencing transformed series, following the convention used by López de Prado for assessing memory preservation after fractional differencing.
+The memory-preservation diagnostic is the Pearson correlation between the original indexed series and the Fixed-width Fractional Differencing transformed series, following López de Prado's convention for assessing memory preservation after fractional differencing.
 
 This diagnostic characterises the operator. It should be reported per regime or segment in the publication. The public repository does not report empirical values.
 
