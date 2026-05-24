@@ -1,68 +1,91 @@
 # Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differencing Operator Across Volatility States Using VIX
 
 **Author:** T. Niero
-Project page: https://bgltn.github.io/d-invariance-ffd/
+**Project page:** https://bgltn.github.io/d-invariance-ffd/
 
 ## Overview
 
-This repository is a research compendium for testing whether the fixed-width fractional differencing (FFD) operator remains stable across volatility states defined from VIX. The central object of inference is the stability of a preprocessing operator, not the estimation of a latent long-memory parameter.
+This repository is a research compendium for testing whether the fixed-width fractional differencing (FFD) operator is stable across volatility states defined inside VIX-based regimes. The object of inference is operator stability, not the estimation of a latent long-memory parameter.
 
-The repository documents a regime-conditioned workflow that combines structural-break detection, nonparametric segmentation, feature-level FFD estimation, and stationary bootstrap-based d-invariance testing. Downstream predictive evaluation is included only as supporting material under a train-only frozen-operator protocol and a sealed out-of-sample design.
+The workflow conditions on VIX-defined regimes and tests the stability of $d^{*}$ across NP-MOJO volatility states. Inference is conducted by stationary bootstrap. Predictive evaluation is supporting material only, under a train-only frozen-operator protocol and a sealed out-of-sample design.
 
-## Research Question
+## Terminology
 
-Does the minimum stationarity-inducing fixed-width fractional differencing order (FFD) d remain invariant across VIX-conditioned volatility states and nonparametric sub-segments when the FFD operator specification is held fixed?
+| Term | Definition |
+|---|---|
+| $d$ | Fractional differencing order; a parameter of the FFD operator on grid $\mathcal{D}$. |
+| $d^{*}$ | Minimum $d \in \mathcal{D}$ for which the augmented Dickey–Fuller (ADF) test rejects the unit-root null at level $\alpha$. |
+| **Regime** | Time interval delimited by structural breaks on VIX. Parent partition, exogenous to the feature. |
+| **Volatility state** (segment) | Time interval inside one regime, delimited by NP-MOJO change points. Child partition. |
+| Admissible partition | The regime partition, or the volatility-state partition inside a fixed regime. |
 
-In this repository, “fixed operator specification” means that the FFD implementation, truncation rule, candidate grid, and stationarity-selection rule are held constant across windows; only the data subset changes. The question is therefore about the stability of the selected preprocessing order across states, not about time variation in an ARFIMA memory parameter.
+The hypothesis is stated at the level of the selected order $d^{*}$, not the operator parameter $d$.
 
-## Formal Hypothesis
+## Research question
 
-For each feature, the null hypothesis is that the minimum admissible fixed-width fractional differencing order remains constant across the segments induced by the volatility-state partition. The corresponding test statistic is the maximum pairwise absolute difference between segment-specific selected orders.
+Does $d^{*}$ remain invariant across the volatility states inside each VIX-defined regime when the FFD operator specification is held fixed?
 
-The mathematical statement is provided in `docs/methodology.md`.
+"Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question concerns the stability of the selected order $d^{*}$, not time variation in a long-memory parameter.
 
-Inference is conducted by bootstrap under fixed train-segment boundaries. The public repository reports anonymised registry outputs and bucketed bootstrap evidence only; raw p-values and private calibration settings are excluded from release.
+## Formal hypothesis
 
-## Methodological Design
+For a fixed admissible partition $\mathcal{P} = \\{S_1, \ldots, S_K\\}$ and feature $j$, let $\hat d^{*}_{j,k}$ denote the selected order on segment $S_k$. The null hypothesis is that the selected order is constant across the partition:
 
-The public pipeline is organised as follows:
+$$
+H_{0,j}:\\; d^{*}_{j,1} = \cdots = d^{*}_{j,K}.
+$$
 
-1. Construction of VIX-conditioned volatility regimes from structural-break diagnostics.
-2. Nonparametric method NP-MOJO segmentation within regime partitions.
-3. Application of the fixed-width fractional differencing operator.
-4. Selection of the minimum admissible d under an ADF-based stationarity rule.
-5. Feature-level testing of the d-invariance hypothesis across windows.
-6. Bootstrap-based inference.
-7. Publication of an anonymised frozen-operator registry.
+The test statistic is the maximum pairwise absolute difference between segment-specific selected orders:
 
-The structural-break layer uses VIX as an external volatility proxy and treats regime construction as retrospective in-sample characterisation. Any downstream use of selected operators is kept separate from this layer and is conducted under train-only freezing, causal feature alignment, and sealed evaluation, in order to preserve the distinction between descriptive regime analysis and predictive use. 
+$$
+\hat T_j = \max_{1 \le k < l \le K} \bigl| \hat d^{*}_{j,k} - \hat d^{*}_{j,l} \bigr|.
+$$
 
-## Scope
+Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn independently within each fixed segment, with the bootstrap statistic recentred around $\hat d^{*}_{j,k}$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
 
-The public repository includes method code, public-safe notebooks, documentation, configuration templates, reproducibility scaffolding, and an anonymised `results/frozen_operators.csv`. It excludes raw licensed data, feature names, feature-class decoders, vendor identifiers, exact calibration schedules, raw p-values, raw or transformed feature matrices, and operational out-of-sample signal outputs.
+The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
 
-## Public Registry Schema
+## Pipeline
 
-The public file `results/frozen_operators.csv` contains only anonymised fields:
+1. Structural-break detection on VIX defines the parent regimes.
+2. NP-MOJO segmentation within each regime defines the child volatility states.
+3. The FFD operator is applied with fixed specification.
+4. The minimum admissible order $d^{*}$ is selected per segment under the ADF rule.
+5. The feature-level statistic $\hat T_j$ is computed across the admissible partition.
+6. Stationary-bootstrap inference is conducted under fixed boundaries.
+7. Selected operators are recorded in an anonymised frozen-operator registry.
+
+Regime construction is a retrospective in-sample characterisation. Downstream operator use is separate, under train-only freezing, causal alignment, and sealed evaluation.
+
+## Scope of inference
+
+The test is conditional on the supplied boundaries. The volatility-state partition is treated as an input to the operator-stability test, not as an object jointly estimated with $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
+
+Caveats:
+
+- $d^{*}$ is grid-valued; $\hat T_j$ inherits the grid resolution.
+- The bootstrap resamples independently within segments; changepoint uncertainty is not propagated.
+- Per-feature tests are reported. No multiplicity adjustment is applied.
+
+## Public registry schema
+
+`results/frozen_operators.csv` contains the following anonymised fields:
 
 ```text
-feature_id
-feature_class
-scope
-window_id
-window_order
-d_star
-adf_rejects
-operator_status
-bootstrap_p_value_bucket
-used_for_operator_selection
-n_obs_bin
+feature_id, feature_class, scope, window_id, window_order,
+d_star, adf_rejects, operator_status,
+bootstrap_p_value_bucket, used_for_operator_selection, n_obs_bin
 ```
 
-This file is a publication registry rather than a private operational registry. Its purpose is to document operator-selection outcomes without revealing the proprietary feature universe, licensed inputs, or confidential calibration details.
+This file is a publication registry, not an operational registry.
 
+## Missing-data policy
 
-## Repository Structure
+The default is `fill_method=None`. Missing observations remain in the indexed series; FFD windows containing missing values are not transformed. The output index is aligned with the input index by timestamp.
+
+Forward fill (`fill_method="ffill"`) is available only as an explicit sensitivity specification. It is not the baseline.
+
+## Repository structure
 
 ```text
 d-invariance-ffd/
@@ -78,78 +101,45 @@ d-invariance-ffd/
 
 ## Installation
 
-Create the environment with Conda:
+With Conda:
 
 ```bash
 conda env create -f environment.yml
 conda activate d-invariance-ffd
 ```
 
-If Conda is unavailable:
+Otherwise:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Getting Started
+## Documentation
 
-1. Read `docs/disclosure_policy.md` before adding files to the public repository.
-2. Use `notebooks/00_data_provenance.ipynb` to verify input provenance and environment setup.
-3. Run the public workflow in sequence: break detection, segmentation, FFD estimation, and d-invariance testing.
-4. Treat `results/frozen_operators.csv` as a publication artifact only, not as the private operational registry. 
+- `docs/public_api.md` — public-safe module interface.
+- `docs/methodology.md` — formal hypothesis, test statistic, and bootstrap procedure.
+- `docs/research_mapping.md` — mapping between the research design and source code.
 
-## Confidentiality Boundary
+The public source code exposes methodology utilities only. It excludes private data, private feature names, raw paths, empirical calibration values, forecasting target logic, and out-of-sample model code.
 
-The manuscript, private notebooks, raw data, feature-name decoder, and calibration files are confidential and are not part of the public repository. The public repository documents the method and releases only anonymised derived artefacts suitable for methodological review.
+## Synthetic example
 
-The public repository documents the method and publishes only anonymised derived artefacts.
+`examples/synthetic_d_invariance.py` demonstrates segment construction, $d^{*}$ selection, and the d-invariance statistic without private data or empirical calibration.
 
-## Disclosure Rule
+## Confidentiality
 
-The governing disclosure rule is: release the methodology; protect the signal. Public artefacts should support review of the procedure without disclosing licensed data, the exact feature universe, or confidential calibration details.
+The manuscript, private notebooks, raw data, feature-name decoder, and calibration files are confidential and are not part of the public repository. The public repository releases only anonymised derived artefacts suitable for methodological review.
 
 ## Status
 
-This research compendium is under preparation. The current release is intended for methodological review and reproducibility support rather than for trading replication. 
+The compendium is under preparation. The current release is intended for methodological review and reproducibility support, not for trading replication.
 
 ## Citation
 
-A `CITATION.cff` file will be provided before public release. 
+A `CITATION.cff` file will be provided before public release.
 
 ## License
 
-Code: Apache 2.0.  
-Documentation and public manuscript material: CC BY 4.0 unless otherwise stated.  
-Private data, private notebooks, and confidential manuscript drafts are excluded. 
-
-## Public API
-
-The reusable public modules are documented here:
-
-- `docs/public_api.md` — public-safe module interface.
-- `docs/research_mapping.md` — mapping between the research design and source code.
-
-The public source code exposes methodology utilities only. It does not include private data, private feature names, raw paths, empirical calibration values, forecasting target logic, or OOS model code.
-
-## Synthetic Example
-
-A public-safe synthetic example is available at `examples/synthetic_d_invariance.py`.
-It demonstrates segment construction, `d*` estimation, and the d-invariance statistic without private data or empirical calibration.
-
-## Scope of inference
-
-The d-invariance test implemented in this repository is conditional on the supplied regime and segment boundaries. The volatility-state partition is treated as an input to the operator-stability test, not as an object jointly estimated with the selected fractional differencing order.
-
-For a fixed admissible partition \(\mathcal{P} = \{I_1,\ldots,I_m\}\), the null hypothesis is:
-
-\[
-H_0: d_1^* = d_2^* = \cdots = d_m^*.
-\]
-
-The repository does not claim joint inference over boundary estimation and Fixed-width Fractional Differencing order selection. Boundary sensitivity and joint uncertainty are reserved for the publication now in progress.
-
-## Missing-data policy
-
-The public implementation does not forward-fill missing observations by default. Missing observations are excluded inside each admissible training segment before order selection. This avoids introducing artificial persistence through carry-forward imputation.
-
-If a user explicitly applies forward fill outside this repository, that choice should be treated as a sensitivity analysis rather than as the baseline specification.
+Code: Apache 2.0.
+Documentation and public manuscript material: CC BY 4.0 unless otherwise stated.
+Private data, private notebooks, and confidential manuscript drafts are excluded.
