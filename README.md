@@ -29,10 +29,10 @@ Does $d^{*}$ remain invariant across the volatility states inside each VIX-defin
 
 ## Formal hypothesis
 
-For a fixed admissible partition $\mathcal{P} = \\{S_1, \ldots, S_K\\}$ and feature $j$, let $\hat d^{*}_{j,k}$ denote the selected order on segment $S_k$. The null hypothesis is that the selected order is constant across the partition:
+For a fixed admissible partition $\mathcal{P} = \{S_1, \ldots, S_K\}$ and feature $j$, let $\hat d^{*}_{j,k}$ denote the selected order on segment $S_k$. The null hypothesis is that the selected order is constant across the partition:
 
 $$
-H_{0,j}:\\; d^{*}_{j,1} = \cdots = d^{*}_{j,K}.
+H_{0,j}: \quad d^{*}_{j,1} = \cdots = d^{*}_{j,K}.
 $$
 
 The test statistic is the maximum pairwise absolute difference between segment-specific selected orders:
