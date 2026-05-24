@@ -109,7 +109,7 @@ The observed test statistic is the maximum pairwise absolute difference between 
 \hat{T}_j = \max_{1 \le k \lt l \le K} \bigl| \hat{d}^{\ast}_{j,k} - \hat{d}^{\ast}_{j,l} \bigr|.
 ```
 
-## Stationary-bootstrap calibration
+## Stationary-bootstrap inference
 
 Inference is conducted by stationary bootstrap (Politis and Romano, 1994), conditional on the fixed admissible partition.
 
