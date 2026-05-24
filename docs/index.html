@@ -67,6 +67,13 @@
     margin-right: 0.9rem;
   }
 
+  .keywords {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    margin: 0.35rem 0 0;
+  }
+
   h2 {
     font-size: 0.8rem;
     font-weight: 700;
@@ -184,21 +191,23 @@
 <main>
 
   <header>
-    <h1>Talita Niero</h1>
-    <p class="role">Quantitative finance · time-series methodology</p>
-    <p class="links">
-      <a href="mailto:ttniero@gmail.com">Email</a>
-      <a href="https://github.com/bgltn/d-invariance-ffd">GitHub</a>
+    <h1>T. Niero</h1>
+    <p class="role">Applied quantitative research in financial econometrics and machine learning</p>
+    <p class="keywords">
+      Keywords: fractional differencing · parameter stability · structural breaks · regime-conditional inference · stationary bootstrap · financial time series · statistical methodology · machine learning in finance
     </p>
   </header>
 
   <section>
     <h2>Research statement</h2>
     <p>
-      Financial models depend on transformations applied before estimation. This research studies one such transformation: the fractional differencing operator used to construct stationary features from persistent financial time series.
+      Financial models depend on transformations applied before estimation. This project studies one such transformation: the Fixed-width Fractional Differencing operator used to construct stationary features from persistent financial time series.
     </p>
     <p>
-      The central question is operational. A preprocessing rule should remove non-stationarity without erasing the dependence structure that may carry information. If the volatility environment changes, a single transformation calibrated on a long sample may fail on both margins: it may under-transform one segment and over-transform another. This project treats that boundary as an operator-selection problem.
+      The question is operational. A preprocessing rule should remove non-stationarity without erasing the dependence structure that may carry information. When the volatility environment changes, a single operator calibrated on a long sample may fail on both margins: under-transforming one segment and over-transforming another. The work reframes this trade-off as an operator-selection problem and asks whether the selected order remains stable across volatility regimes defined from VIX.
+    </p>
+    <p>
+      The contribution is methodological. The object of inference is the stability of the preprocessing operator itself, not the estimation of a latent memory parameter.
     </p>
   </section>
 
@@ -207,7 +216,7 @@
       <span class="status-pill">research in progress</span>
     </h2>
 
-    <h3>Stability of the selected order of the Fixed-width Fractional Differencing operator</h3>
+    <h3>d-Invariance of the Fixed-width Fractional Differencing Operator Across Volatility Regimes</h3>
 
     <div class="meta-row">
       <span><strong>Method:</strong> nonparametric segmentation, fractional differencing</span>
@@ -239,6 +248,15 @@
 
     <p>
       The hypothesis asks whether the selected order remains invariant across volatility-conditioned training segments when the operator specification is held fixed. The empirical design keeps segmentation and operator selection separate. An external volatility proxy defines training segments. A nonparametric multivariate segmentation procedure supplies internal boundaries (McGonigle and Cho, 2025). A stationary bootstrap evaluates the stability of the selected order across those training segments (Politis and Romano, 1994). Validation and test observations never enter operator selection.
+    </p>
+
+
+    <p>
+      The test is conditional on a supplied volatility-state partition. Regime and segment boundaries define the admissible estimation windows. The selected order is then compared across those windows. Joint inference over boundary estimation and operator selection is outside the public repository scope and is reserved for the publication now in progress.
+    </p>
+
+    <p>
+      Missing observations are not forward-filled by default. They are excluded inside each admissible training segment before order selection. This policy avoids introducing artificial persistence through carry-forward imputation.
     </p>
 
     <p>
