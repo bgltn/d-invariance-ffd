@@ -45,6 +45,7 @@ Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn
 
 The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
 
+
 ## Pipeline
 
 1. Structural-break detection on VIX defines the parent regimes.
