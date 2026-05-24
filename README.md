@@ -135,3 +135,21 @@ The public source code exposes methodology utilities only. It does not include p
 
 A public-safe synthetic example is available at `examples/synthetic_d_invariance.py`.
 It demonstrates segment construction, `d*` estimation, and the d-invariance statistic without private data or empirical calibration.
+
+## Scope of inference
+
+The d-invariance test implemented in this repository is conditional on the supplied regime and segment boundaries. The volatility-state partition is treated as an input to the operator-stability test, not as an object jointly estimated with the selected fractional differencing order.
+
+For a fixed admissible partition \(\mathcal{P} = \{I_1,\ldots,I_m\}\), the null hypothesis is:
+
+\[
+H_0: d_1^* = d_2^* = \cdots = d_m^*.
+\]
+
+The repository does not claim joint inference over boundary estimation and Fixed-width Fractional Differencing order selection. Boundary sensitivity and joint uncertainty are reserved for the publication now in progress.
+
+## Missing-data policy
+
+The public implementation does not forward-fill missing observations by default. Missing observations are excluded inside each admissible training segment before order selection. This avoids introducing artificial persistence through carry-forward imputation.
+
+If a user explicitly applies forward fill outside this repository, that choice should be treated as a sensitivity analysis rather than as the baseline specification.

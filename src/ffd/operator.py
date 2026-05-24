@@ -4,9 +4,20 @@ import numpy as np
 import pandas as pd
 
 
-def get_ffd_weights(d: float, threshold: float) -> np.ndarray:
-    if d < 0:
-        raise ValueError("d must be non-negative.")
+def get_ffd_weights(d: float, threshold: float = 1e-5) -> np.ndarray:
+    """
+    Return fixed-width fractional-differencing weights.
+
+    The returned vector is ordered from oldest to newest observation, so it can
+    be directly dotted with a chronological rolling window.
+
+    Examples:
+    - d = 0 -> [1.0]
+    - d = 1 -> [-1.0, 1.0]
+    """
+    if not (0.0 <= d <= 1.0):
+        raise ValueError("d must be in [0, 1].")
+
     if threshold <= 0:
         raise ValueError("threshold must be strictly positive.")
 
@@ -15,6 +26,7 @@ def get_ffd_weights(d: float, threshold: float) -> np.ndarray:
 
     while True:
         weight = -weights[-1] * (d - k + 1) / k
+
         if abs(weight) < threshold:
             break
 
@@ -24,43 +36,79 @@ def get_ffd_weights(d: float, threshold: float) -> np.ndarray:
     return np.asarray(weights[::-1], dtype=float)
 
 
+def get_ffd_width(d: float, threshold: float = 1e-5) -> int:
+    """
+    Return the retained fixed-width window length.
+    """
+    return int(len(get_ffd_weights(d=d, threshold=threshold)))
+
+
 def fracdiff_ffd(
     series: pd.Series,
     d: float,
-    threshold: float,
-    *,
-    fill_method: str | None = "ffill",
+    threshold: float = 1e-5,
+    fill_method: str | None = None,
 ) -> pd.Series:
-    x = series.astype(float).replace([np.inf, -np.inf], np.nan)
+    """
+    Apply Fixed-width Fractional Differencing to one indexed series.
+
+    Missing-data policy:
+    - fill_method=None: do not impute; skip windows containing missing values.
+    - fill_method="ffill": explicitly forward-fill before transformation.
+
+    Forward fill is not the default because carry-forward imputation can alter
+    persistence and therefore affect the selected order d*.
+    """
+    if fill_method not in (None, "ffill"):
+        raise ValueError("fill_method must be None or 'ffill'.")
+
+    x = pd.Series(series, copy=True).astype(float)
 
     if fill_method == "ffill":
         x = x.ffill()
-    elif fill_method is not None:
-        x = x.fillna(method=fill_method)
-
-    x = x.dropna()
-
-    if x.empty:
-        return pd.Series(dtype=float, name=series.name)
 
     weights = get_ffd_weights(d=d, threshold=threshold)
     width = len(weights)
 
-    if len(x) < width:
-        return pd.Series(dtype=float, name=series.name)
+    if x.dropna().empty or len(x) < width:
+        return pd.Series(dtype=float, name=getattr(series, "name", None))
 
-    values = x.to_numpy()
-    output = [
-        float(np.dot(weights, values[i - width + 1 : i + 1]))
-        for i in range(width - 1, len(values))
-    ]
+    values = x.to_numpy(dtype=float)
+    index = x.index
 
-    return pd.Series(
-        output,
-        index=x.index[width - 1 :],
-        name=series.name,
+    out: list[float] = []
+    out_index = []
+
+    for iloc in range(width - 1, len(values)):
+        window = values[iloc - width + 1 : iloc + 1]
+
+        if not np.isfinite(window).all():
+            continue
+
+        out.append(float(np.dot(weights, window)))
+        out_index.append(index[iloc])
+
+    return pd.Series(out, index=out_index, name=getattr(series, "name", None))
+
+
+# Compatibility aliases for notebooks / older examples.
+get_weights_ffd = get_ffd_weights
+
+
+def fracdiff_ffd_series(
+    series: pd.Series,
+    d: float,
+    tau: float = 1e-5,
+    fill_method: str | None = None,
+) -> tuple[pd.Series, int]:
+    """
+    Notebook-compatible wrapper returning both transformed series and width.
+    """
+    transformed = fracdiff_ffd(
+        series=series,
+        d=d,
+        threshold=tau,
+        fill_method=fill_method,
     )
-
-
-def get_ffd_width(d: float, threshold: float) -> int:
-    return len(get_ffd_weights(d=d, threshold=threshold))
+    width = get_ffd_width(d=d, threshold=tau)
+    return transformed, width

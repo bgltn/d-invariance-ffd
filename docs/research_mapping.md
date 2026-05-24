@@ -21,6 +21,21 @@ The object of inference is the preprocessing operator, not a downstream forecast
 | Frozen operator registry | `audit.schema` | Validates anonymised publication artefacts |
 | Public-safety check | `audit.leakage` | Scans files for caller-supplied forbidden strings |
 
+## Boundary hierarchy
+
+The pipeline uses a two-level boundary hierarchy.
+
+1. **Parent volatility regimes**  
+   Volatility-state regimes are defined outside the FFD operator-selection step. These regimes provide the parent estimation windows.
+
+2. **Within-regime segmentation**  
+   Nonparametric segmentation is applied inside each parent regime. Segment boundaries are not allowed to cross parent-regime boundaries.
+
+3. **Operator selection**  
+   The selected order \(d^*\) is estimated independently inside each admissible train segment. The FFD transformation never crosses a regime or segment boundary.
+
+The d-invariance test is therefore conditional on this boundary hierarchy. If a segmentation method proposes a boundary outside a parent regime, that boundary is rejected by construction. If different segmentation methods imply different admissible partitions, they define different conditional tests.
+
 ## Segmentation boundary convention
 
 The public code does not implement NP-MOJO calibration.
