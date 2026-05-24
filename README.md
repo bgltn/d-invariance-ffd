@@ -29,19 +29,19 @@ Does $d^{*}$ remain invariant across the volatility states inside each VIX-defin
 
 ## Formal hypothesis
 
-For a fixed admissible partition $\mathcal{P} = \{S_1, \ldots, S_K\}$ and feature $j$, let $\hat d^{*}_{j,k}$ denote the selected order on segment $S_k$. The null hypothesis is that the selected order is constant across the partition:
+For a fixed admissible partition $`\mathcal{P} = \{S_1, \ldots, S_K\}`$ and feature $`j`$, let $`\hat{d}^{\ast}_{j,k}`$ denote the selected order on segment $`S_k`$. The null hypothesis is that the selected order is constant across the partition:
 
-$$
-H_{0,j}: \quad d^{*}_{j,1} = \cdots = d^{*}_{j,K}.
-$$
+```math
+H_{0,j}: \quad d^{\ast}_{j,1} = \cdots = d^{\ast}_{j,K}.
+```
 
 The test statistic is the maximum pairwise absolute difference between segment-specific selected orders:
 
-$$
-\hat T_j = \max_{1 \le k < l \le K} \bigl| \hat d^{*}_{j,k} - \hat d^{*}_{j,l} \bigr|.
-$$
+```math
+\hat{T}_j = \max_{1 \le k \lt l \le K} \bigl| \hat{d}^{\ast}_{j,k} - \hat{d}^{\ast}_{j,l} \bigr|.
+```
 
-Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn independently within each fixed segment, with the bootstrap statistic recentred around $\hat d^{*}_{j,k}$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
+Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn independently within each fixed segment, with the bootstrap statistic recentred around $`\hat{d}^{\ast}_{j,k}`$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
 
 The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
 
