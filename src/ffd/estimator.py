@@ -1,3 +1,14 @@
+"""Estimate the minimum admissible fractional differencing order d*.
+
+The ADF defaults follow López de Prado (2018), Advances in Financial Machine
+Learning, Chapter 5, snippet 5.4:
+
+    regression="c", autolag=None, maxlag=1
+
+The default missing-data policy is no imputation (``fill_method=None``).
+Forward fill is available only as an explicit user choice. This matches the
+public-API and methodology documentation in the repository.
+"""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -58,7 +69,10 @@ def _clean_series(series: pd.Series, fill_method: str | None) -> pd.Series:
     if fill_method == "ffill":
         x = x.ffill()
     elif fill_method is not None:
-        x = x.fillna(method=fill_method)
+        raise ValueError(
+            f"Unsupported fill_method: {fill_method!r}. "
+            "Allowed values are None (default) or 'ffill' (explicit)."
+        )
 
     return x.dropna()
 
@@ -86,10 +100,44 @@ def estimate_d_star(
     *,
     feature: str | None = None,
     adf_regression: str = "c",
-    autolag: str | None = "AIC",
-    maxlag: int | None = None,
-    fill_method: str | None = "ffill",
+    autolag: str | None = None,
+    maxlag: int | None = 1,
+    fill_method: str | None = None,
 ) -> DStarResult:
+    """Select the minimum admissible d on a grid under an ADF stationarity rule.
+
+    Parameters
+    ----------
+    series : pd.Series
+        Univariate input series.
+    d_grid : Iterable[float]
+        Ordered, ascending grid of non-negative candidate orders.
+    threshold : float
+        FFD weight truncation threshold tau (> 0).
+    adf_alpha : float
+        ADF significance level in (0, 1).
+    min_obs : int
+        Minimum number of FFD observations required for the ADF test.
+    feature : str | None
+        Optional feature label propagated to the result.
+    adf_regression : str
+        ADF regression specification. Default 'c' (constant only)
+        follows López de Prado (2018, snippet 5.4).
+    autolag : str | None
+        Information criterion for automatic lag selection. Default None
+        (no auto-selection) follows López de Prado (2018, snippet 5.4).
+    maxlag : int | None
+        Fixed lag order for the ADF test. Default 1 follows
+        López de Prado (2018, snippet 5.4).
+    fill_method : str | None
+        Missing-data policy. Default None means no imputation. 'ffill'
+        applies forward fill and must be reported as a sensitivity choice.
+
+    Returns
+    -------
+    DStarResult
+        Dataclass with the selected order, ADF outcome, and status flag.
+    """
     d_values = _validate_inputs(
         d_grid=d_grid,
         threshold=threshold,
@@ -215,10 +263,15 @@ def estimate_d_star_frame(
     min_obs: int,
     *,
     adf_regression: str = "c",
-    autolag: str | None = "AIC",
-    maxlag: int | None = None,
-    fill_method: str | None = "ffill",
+    autolag: str | None = None,
+    maxlag: int | None = 1,
+    fill_method: str | None = None,
 ) -> pd.DataFrame:
+    """Apply estimate_d_star to every column of a DataFrame.
+
+    Defaults match estimate_d_star: ADF parameters follow López de Prado
+    (2018, snippet 5.4) and no forward fill is applied by default.
+    """
     records = []
 
     for column in data.columns:

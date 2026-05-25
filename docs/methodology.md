@@ -80,8 +80,9 @@ For each feature and each admissible segment, the candidate grid $`\mathcal{D}`$
 The ADF specification follows López de Prado (2018, snippet 5.4):
 
 - regression: constant only (`regression="c"`);
-- lag order: fixed at one (`maxlag=1`, `autolag=None`);
-- minimum observations per segment: `MIN_ADF_OBS = 120`.
+- lag order: fixed at one (`maxlag=1`, `autolag=None`).
+
+A minimum number of observations per segment (`min_obs`) is required before the ADF test is conducted; segments shorter than this threshold yield `status="INSUFFICIENT_OBS"` and no admissible $`d^{\ast}`$. The choice of `min_obs` follows the practical guidance in López de Prado (2018, Chapter 5), which highlights that fixed-width fractional differencing reduces the effective sample length and that the ADF test requires a sample large enough to detect rejection at the configured level. The research run uses a value calibrated to that guidance and is held constant across segments for a given test. The synthetic example uses a smaller value appropriate to the shorter synthetic series.
 
 The tuple $`(\mathcal{D}, \tau, \alpha, \text{ADF parameters})`$ is held fixed across segments for a given test. For feature $`j`$ in segment $`k`$, $`\hat{d}^{\ast}_{j,k}`$ denotes the segment-specific selected order.
 
