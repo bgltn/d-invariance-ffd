@@ -25,3 +25,4 @@ dist/
 # GitHub Pages landing page
 !docs/index.html
 .DS_Store
+results/synthetic_frozen_operators.csv

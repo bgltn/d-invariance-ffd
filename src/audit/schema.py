@@ -10,14 +10,20 @@ REQUIRED_FROZEN_OPERATOR_COLUMNS = (
     "feature_id",
     "feature_class",
     "scope",
+    "parent_regime_id",
     "window_id",
     "window_order",
     "d_star",
     "adf_rejects",
     "operator_status",
     "bootstrap_p_value_bucket",
-    "used_for_operator_selection",
+    "n_obs_bin",
 )
+
+ALLOWED_SCOPES = ("REGIME", "SEGMENT")
+ALLOWED_OPERATOR_STATUS = ("STATIONARY",)
+ALLOWED_BOOTSTRAP_P_VALUE_BUCKETS = ("p<0.01", "0.01<=p<0.10", "p>=0.10")
+ALLOWED_N_OBS_BINS = ("<200", "200-500", "500-1000", "1000-2000", ">2000")
 
 
 def validate_required_columns(
@@ -68,11 +74,34 @@ def validate_unique_operator_keys(
         )
 
 
+def validate_parent_regime_id_conditional_on_scope(data: pd.DataFrame) -> None:
+    """Ensure parent_regime_id is populated for SEGMENT rows and null for REGIME rows.
+
+    Volatility states (scope='SEGMENT') are children of a regime, so the parent
+    must be identifiable. Regimes (scope='REGIME') have no parent and must leave
+    the field blank.
+    """
+    segment_rows = data.loc[data["scope"] == "SEGMENT"]
+    regime_rows = data.loc[data["scope"] == "REGIME"]
+
+    if segment_rows["parent_regime_id"].isna().any():
+        raise ValueError(
+            "parent_regime_id must be populated for all SEGMENT rows."
+        )
+
+    if regime_rows["parent_regime_id"].notna().any():
+        raise ValueError(
+            "parent_regime_id must be null for REGIME rows."
+        )
+
+
 def validate_frozen_operator_registry(
     registry: pd.DataFrame,
     *,
-    allowed_scopes: tuple[str, ...] = ("REGIME", "SEGMENT"),
-    allowed_operator_status: tuple[str, ...] = ("STATIONARY",),
+    allowed_scopes: tuple[str, ...] = ALLOWED_SCOPES,
+    allowed_operator_status: tuple[str, ...] = ALLOWED_OPERATOR_STATUS,
+    allowed_bootstrap_p_value_buckets: tuple[str, ...] = ALLOWED_BOOTSTRAP_P_VALUE_BUCKETS,
+    allowed_n_obs_bins: tuple[str, ...] = ALLOWED_N_OBS_BINS,
 ) -> None:
     validate_required_columns(
         registry,
@@ -90,12 +119,19 @@ def validate_frozen_operator_registry(
             "d_star",
             "adf_rejects",
             "operator_status",
-            "used_for_operator_selection",
+            "bootstrap_p_value_bucket",
+            "n_obs_bin",
         ),
     )
 
     validate_allowed_values(registry, "scope", allowed_scopes)
     validate_allowed_values(registry, "operator_status", allowed_operator_status)
+    validate_allowed_values(
+        registry, "bootstrap_p_value_bucket", allowed_bootstrap_p_value_buckets
+    )
+    validate_allowed_values(registry, "n_obs_bin", allowed_n_obs_bins)
+
+    validate_parent_regime_id_conditional_on_scope(registry)
     validate_unique_operator_keys(registry)
 
     if (registry["d_star"].astype(float) < 0).any():

@@ -1,3 +1,1 @@
-# The frozen-operator registry will be released alongside the manuscript.
-# Schema documented in docs/disclosure_policy.md.
-# Boundary hierarchy documented in docs/methodology.md.
+feature_id,feature_class,scope,parent_regime_id,window_id,window_order,d_star,adf_rejects,operator_status,bootstrap_p_value_bucket,n_obs_bin
