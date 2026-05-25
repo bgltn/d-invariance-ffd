@@ -1,15 +1,15 @@
-# Disclosure Policy
+# Disclosure policy
 
 ## Principle
 
 The public repository supports methodological review. It is not designed to reproduce private trading signals, private empirical calibration, or proprietary data construction.
 
-## Public Material
+## Public material
 
 The following material may be included in the repository:
 
 - methodological documentation;
-- Fixed-width Fractional Differencing utilities;
+- fixed-width fractional differencing (FFD) utilities;
 - d-invariance hypothesis definition;
 - stationary-bootstrap test design;
 - public-safe configuration templates;
@@ -19,7 +19,7 @@ The following material may be included in the repository:
 - synthetic examples;
 - unit tests.
 
-## Excluded Material
+## Excluded material
 
 The following material must not be committed:
 
@@ -38,11 +38,11 @@ The following material must not be committed:
 - portfolio-construction logic;
 - confidential manuscript drafts.
 
-## Public Registry
+Bootstrap seeds are excluded because, combined with the public registry schema, they could enable partial reverse-engineering of private feature identifiers. Reproducibility is supported at the methodological level (procedure, statistic, test design), not at the bit-exact level.
 
-A public-safe frozen-operator registry may be released when it is anonymised and publication-ready.
+## Public registry
 
-It may contain:
+A public-safe frozen-operator registry may be released when it is anonymised and publication-ready. It may contain the following fields:
 
 ```text
 feature_id
@@ -56,3 +56,8 @@ operator_status
 bootstrap_p_value_bucket
 used_for_operator_selection
 n_obs_bin
+```
+
+`feature_class` reports the transformation class (for example, `LOG_LEVEL` or `LEVEL`). It does not report the economic asset class, country, ticker, maturity, vendor identifier, or signal role.
+
+The registry is a publication artefact, not the private operational registry.

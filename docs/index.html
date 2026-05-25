@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Talita Niero — Research</title>
-<meta name="description" content="Independent research on the stability of the selected order of the Fixed-width Fractional Differencing operator across volatility-conditioned segments.">
+<meta name="description" content="Independent research on the stability of the selected order of the Fixed-width Fractional Differencing operator across volatility states defined inside VIX-based regimes.">
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
@@ -191,7 +191,7 @@
 <main>
 
   <header>
-    <h1>T. Niero</h1>
+    <h1>Talita Niero</h1>
     <p class="role">Applied quantitative research in financial econometrics and machine learning</p>
     <p class="keywords">
       Keywords: fractional differencing · parameter stability · structural breaks · regime-conditional inference · stationary bootstrap · financial time series · statistical methodology · machine learning in finance
@@ -201,13 +201,13 @@
   <section>
     <h2>Research statement</h2>
     <p>
-      Financial models depend on transformations applied before estimation. This project studies one such transformation: the Fixed-width Fractional Differencing operator used to construct stationary features from persistent financial time series.
+      Financial models depend on the transformations applied before estimation. This project studies one such transformation: the Fixed-width Fractional Differencing operator used to construct stationary features from persistent financial time series.
     </p>
     <p>
-      The question is operational. A preprocessing rule should remove non-stationarity without erasing the dependence structure that may carry information. When the volatility environment changes, a single operator calibrated on a long sample may fail on both margins: under-transforming one segment and over-transforming another. The work reframes this trade-off as an operator-selection problem and asks whether the selected order remains stable across volatility regimes defined from VIX.
+      The question is operational. A preprocessing rule should reduce non-stationarity without erasing the dependence structure that may carry information. When the volatility environment changes, a single operator calibrated on a long sample may fail on both margins: under-transforming one window and over-transforming another. The work reframes this trade-off as an operator-selection problem and asks whether the selected order remains stable across volatility states defined inside VIX-based regimes.
     </p>
     <p>
-      The contribution is methodological. The object of inference is the stability of the preprocessing operator itself, not the estimation of a latent memory parameter.
+      The contribution is methodological. The object of inference is the stability of the preprocessing operator, not the estimation of a latent memory parameter.
     </p>
   </section>
 
@@ -216,51 +216,50 @@
       <span class="status-pill">research in progress</span>
     </h2>
 
-    <h3>d-Invariance of the Fixed-width Fractional Differencing Operator Across Volatility Regimes</h3>
+    <h3>Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differencing Operator Across Volatility States Using VIX</h3>
 
     <div class="meta-row">
-      <span><strong>Method:</strong> nonparametric segmentation, fractional differencing</span>
+      <span><strong>Method:</strong> structural-break detection, nonparametric segmentation, fixed-width fractional differencing, stationary bootstrap</span>
     </div>
 
     <p>
-      The fractional differencing operator \((1-L)^d\) generalises integer differencing to non-integer orders (Granger and Joyeux, 1980; Hosking, 1981). Its weights decay rather than terminate, so the operator can reduce non-stationarity while retaining more autocorrelation structure than first differencing. In finite samples, the infinite sequence of weights requires truncation. López de Prado (2018, Chapter 5) gives this implementation through the Fixed-width Fractional Differencing method. The method retains weights up to the largest lag \(L^*\) satisfying \(|\omega_{L^*}(d)| \geq \tau\):
+      The fractional differencing operator \((1-L)^d\) generalises integer differencing to non-integer orders (Granger and Joyeux, 1980; Hosking, 1981). Its weights decay rather than terminate, so the operator can reduce non-stationarity while retaining more autocorrelation structure than first differencing. In finite samples, the infinite sequence of weights requires truncation. López de Prado (2018, Chapter 5) gives a practical implementation through the Fixed-width Fractional Differencing method, which retains weights up to the largest lag \(L^*\) satisfying \(|\omega_{L^*}(d)| \geq \tau\):
     </p>
 
     <div class="equation">
       \[
-      \tilde{X}_t = \sum_{k=0}^{L^*} \omega_k(d) X_{t-k},
+      \tilde{X}_t = \sum_{k=0}^{L^*} \omega_k(d)\, X_{t-k},
       \qquad
       L^* = \max\{k \in \mathbb{N}: |\omega_k(d)| \geq \tau\}.
       \]
     </div>
 
     <p>
-      In this design, \(d\) is not estimated inside a predictive model. A deterministic stationarity rule selects \(d\) before model estimation. The selected order therefore depends on the observed series and on the fixed-width specification, including the truncation threshold and the stationarity criterion.
+      In this design, \(d\) is not estimated inside a predictive model. A deterministic stationarity rule selects the minimum admissible order \(d^*\) before model estimation. The selected order depends on the observed series, the truncation threshold \(\tau\), the candidate grid, and the stationarity criterion. Throughout, \(d\) denotes the operator parameter and \(d^*\) denotes the data-dependent selected order.
+    </p>
+
+    <p>
+      The pipeline uses a two-level boundary hierarchy. Structural-break detection on VIX defines parent regimes. Nonparametric segmentation inside each regime defines child volatility states (McGonigle and Cho, 2025). The d-invariance hypothesis is tested across the units of an admissible partition. For a fixed partition \(\mathcal{P} = \{S_1, \ldots, S_K\}\):
     </p>
 
     <div class="equation">
       \[
-      H_0: d_1^* = d_2^* = \cdots = d_m^*,
+      H_0:\ d^*_1 = d^*_2 = \cdots = d^*_K,
       \qquad
-      H_1: \exists\, i,j \text{ such that } d_i^* \neq d_j^*.
+      H_1:\ \exists\ k < l \ \text{such that}\ d^*_k \neq d^*_l.
       \]
     </div>
 
     <p>
-      The hypothesis asks whether the selected order remains invariant across volatility-conditioned training segments when the operator specification is held fixed. The empirical design keeps segmentation and operator selection separate. An external volatility proxy defines training segments. A nonparametric multivariate segmentation procedure supplies internal boundaries (McGonigle and Cho, 2025). A stationary bootstrap evaluates the stability of the selected order across those training segments (Politis and Romano, 1994). Validation and test observations never enter operator selection.
-    </p>
-
-
-    <p>
-      The test is conditional on a supplied volatility-state partition. Regime and segment boundaries define the admissible estimation windows. The selected order is then compared across those windows. Joint inference over boundary estimation and operator selection is outside the public repository scope and is reserved for the publication now in progress.
+      Inference uses a stationary bootstrap drawn independently within each fixed segment, recentred around the observed selected orders, with the partition treated as fixed (Politis and Romano, 1994). Validation and test observations never enter operator selection.
     </p>
 
     <p>
-      Missing observations are not forward-filled by default. They are excluded inside each admissible training segment before order selection. This policy avoids introducing artificial persistence through carry-forward imputation.
+      The test is conditional on the supplied partition. Joint inference over boundary estimation and operator selection is outside the public repository scope and is reserved for the publication in progress.
     </p>
 
     <p>
-      A public implementation accompanies the project. The repository linked below contains a public-safe implementation of the Fixed-width Fractional Differencing procedure, boundary-consuming segmentation interfaces, tests, and synthetic examples. Results and empirical findings are reserved for the publication now in progress.
+      The repository linked below contains a public-safe implementation of the procedure: fixed-width fractional differencing utilities, boundary-consuming segmentation interfaces, the d-invariance statistic, leakage checks, synthetic examples, and unit tests. Empirical results are reserved for the publication in progress.
     </p>
 
     <p>
@@ -291,8 +290,8 @@
       </li>
 
       <li>
-        Beran, J., &amp; Terrin, N. (1996). Testing for a change of the long-memory parameter. <em>Biometrika</em>, 83(3), 627–638.
-        <span class="note">Provides a direct precedent for testing stability in memory-related parameters.</span>
+        Beran, J., &amp; Terrin, N. (1996). Testing for a change of the long-memory parameter. <em>Biometrika</em>, 83(3), 627–638. <a href="http://www.jstor.org/stable/2337514">http://www.jstor.org/stable/2337514</a>
+        <span class="note">Provides a precedent for testing stability in memory-related parameters.</span>
       </li>
 
       <li>
@@ -305,9 +304,8 @@
         <span class="note">Provides the bootstrap procedure used for weakly dependent time series.</span>
       </li>
 
-
       <li>
-        Tsay, W.-J., &amp; Härdle, W. K. (2009). A generalized ARFIMA process with Markov-switching fractional differencing parameter. <em>Journal of Statistical Computation and Simulation</em>, 79(5), 731–745.
+        Tsay, W.-J., &amp; Härdle, W. K. (2009). A generalized ARFIMA process with Markov-switching fractional differencing parameter. <em>Journal of Statistical Computation and Simulation</em>, 79(5), 731–745. <a href="https://doi.org/10.1080/00949650801910239">https://doi.org/10.1080/00949650801910239</a>
         <span class="note">Provides a state-dependent fractional-differencing specification and motivates testing whether the selected order varies across regimes.</span>
       </li>
 

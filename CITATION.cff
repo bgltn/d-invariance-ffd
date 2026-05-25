@@ -1,19 +1,19 @@
 cff-version: 1.2.0
-title: "d-invariance-ffd"
-message: "If you use this repository, please cite it using the metadata in this file."
-type: software
+message: "If you use this repository, please cite it as below."
+title: "Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differencing Operator Across Volatility States Using VIX: A Public Methodology Compendium"
 authors:
-  - family-names: "N."
-    given-names: "Talita"
+  - family-names: Niero
+    given-names: Talita
+type: software
 repository-code: "https://github.com/bgltn/d-invariance-ffd"
-abstract: "Public-safe utilities for fixed-width fractional differencing, d-star estimation, segmentation boundary validation, and d-invariance testing."
+url: "https://bgltn.github.io/d-invariance-ffd/"
+license: Apache-2.0
+date-released: 2026-05-24
 keywords:
   - fractional differencing
-  - fixed-width fractional differencing
-  - d-invariance
-  - financial machine learning
-  - change-point detection
-  - long memory
-license: Apache-2.0
-version: "0.1.0"
-date-released: "2026-05-23"
+  - parameter stability
+  - structural breaks
+  - stationary bootstrap
+  - volatility regimes
+  - financial econometrics
+  - statistical methodology
