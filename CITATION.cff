@@ -9,6 +9,7 @@ repository-code: "https://github.com/bgltn/d-invariance-ffd"
 url: "https://bgltn.github.io/d-invariance-ffd/"
 license: Apache-2.0
 date-released: 2026-05-24
+version: "0.1.0"
 keywords:
   - fractional differencing
   - parameter stability
