@@ -2,7 +2,7 @@
 *.xls
 *.parquet
 *.pkl
-*.html
+
 *.docx
 outputs/
 results_private/
@@ -23,6 +23,7 @@ build/
 dist/
 
 # GitHub Pages landing page
-!docs/index.html
 .DS_Store
 results/synthetic_frozen_operators.csv
+
+   
