@@ -2,7 +2,7 @@
 
 ## Scope
 
-This document is the formal methodological description of the public d-invariance pipeline. The object of inference is the stability of the fixed-width fractional differencing (FFD) operator across fixed admissible partitions. It is not the estimation of a latent long-memory parameter and not the direct optimisation rule.
+This document is the formal methodological description of the public d-invariance pipeline. The object of inference is the stability of the fixed-width fractional differencing (FFD) operator across fixed admissible partitions. It is not the estimation of a latent long-memory parameter and not the direct optimisation of a trading rule.
 
 The public release supports methodological review and reproducibility. It excludes raw licensed data, proprietary feature identifiers, exact private calibration schedules, forecasting logic, and operational signal outputs.
 
@@ -179,15 +179,17 @@ The public schema is restricted to fields such as:
 feature_id
 feature_class
 scope
+parent_regime_id
 window_id
 window_order
 d_star
 adf_rejects
 operator_status
 bootstrap_p_value_bucket
-used_for_operator_selection
 n_obs_bin
 ```
+
+Field semantics are documented in `docs/disclosure_policy.md`. The `parent_regime_id` field is required for `SEGMENT` rows so that the boundary hierarchy can be reconstructed from the registry alone. The `bootstrap_p_value_bucket` field discloses one of three buckets (`p<0.01`, `0.01<=p<0.10`, `p>=0.10`); raw p-values are not released. The `n_obs_bin` field discloses bucketed sample sizes (`<200`, `200-500`, `500-1000`, `1000-2000`, `>2000`).
 
 `feature_class` reports the transformation class (for example, `LOG_LEVEL` or `LEVEL`). It does not report the economic asset class, country, ticker, maturity, vendor identifier, or signal role.
 
