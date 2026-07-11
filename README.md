@@ -27,7 +27,7 @@ The hypothesis is stated at the level of the selected order $d^{*}$, not the ope
 Does $d^{*}$ remain invariant across the segments inside each VIX-defined volatility state when the FFD operator specification is held fixed?
  
 "Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question concerns the stability of the selected order $d^{*}$, not time variation in a long-memory parameter.
-
+ 
 ## Formal hypothesis
  
 For a fixed admissible partition $`\mathcal{P} = \{S_1, \ldots, S_K\}`$ of segments and feature $`j`$, let $`\hat{d}^{\ast}_{j,k}`$ denote the selected order on segment $`S_k`$. The null hypothesis is that the selected order is constant across the partition:
@@ -46,6 +46,7 @@ Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn
  
 The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
  
+ 
 ## Pipeline
  
 1. CUSUM-based structural-break detection on VIX defines the parent volatility states.
@@ -55,9 +56,8 @@ The public repository reports anonymised registry outputs and bucketed bootstrap
 5. The feature-level statistic $\hat T_j$ is computed across the admissible partition.
 6. Stationary-bootstrap inference is conducted under fixed boundaries.
 7. Selected operators are recorded in an anonymised frozen-operator registry.
-8. 
 State construction is a retrospective in-sample characterisation. Downstream operator use is separate, under train-only freezing, causal alignment, and sealed evaluation.
-
+ 
 ## Scope of inference
  
 The test is conditional on the supplied boundaries. The segment partition is treated as an input to the stability test for $d^{*}$, not as an object jointly estimated with $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
