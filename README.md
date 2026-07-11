@@ -1,4 +1,4 @@
-# Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differencing Operator Across Volatility States Using VIX
+# Testing the d-Invariance Hypothesis for the Fixed-Width Fractional Differentiation Operator Across Volatility States Using VIX
 [![DOI](https://zenodo.org/badge/1247172897.svg)](https://doi.org/10.5281/zenodo.20384552)
 
 **Author:** T. Niero
@@ -6,65 +6,64 @@
 
 ## Overview
 
-This repository is a research compendium for testing whether the fixed-width fractional differencing (FFD) operator is stable across volatility states defined inside VIX-based regimes. The object of inference is operator stability, not the estimation of a latent long-memory parameter.
+This repository is a research compendium for testing whether the order d* selected for the fixed-width fractional differentiation (FFD) operator is stable across volatility segmentation conditioned on the VIX. The object of inference is the stability of the selected order d*; the operator specification is held fixed. The study does not estimate a latent long-memory parameter.
 
-The workflow conditions on VIX-defined regimes and tests the stability of $d^{*}$ across NP-MOJO volatility states. Inference is conducted by stationary bootstrap. Predictive evaluation is supporting material only, under a train-only frozen-operator protocol and a sealed out-of-sample design.
+The workflow conditions on CUSUM-defined VIX volatility states and tests the stability of d* across NP-MOJO segments within each state. Inference is conducted by stationary bootstrap. Predictive evaluation is supporting material only, under a train-only frozen-operator protocol and a sealed out-of-sample design.
 
 ## Terminology
-
+ 
 | Term | Definition |
 |---|---|
-| $d$ | Fractional differencing order; a parameter of the FFD operator on grid $\mathcal{D}$. |
+| $d$ | Fractional differentiation order; a parameter of the FFD operator on grid $\mathcal{D}$. |
 | $d^{*}$ | Minimum $d \in \mathcal{D}$ for which the augmented Dickey–Fuller (ADF) test rejects the unit-root null at level $\alpha$. |
-| **Regime** | Time interval delimited by structural breaks on VIX. Parent partition, exogenous to the feature. |
-| **Volatility state** (segment) | Time interval inside one regime, delimited by NP-MOJO change points. Child partition. |
-| Admissible partition | The regime partition, or the volatility-state partition inside a fixed regime. |
-
+| **Volatility state** | Time interval delimited by CUSUM-detected structural breaks on VIX. Parent partition, exogenous to the feature. |
+| **Segment** | Time interval inside one volatility state, delimited by NP-MOJO change points. Child partition. |
+| Admissible partition | The state partition, or the segment partition inside a fixed state. |
+ 
 The hypothesis is stated at the level of the selected order $d^{*}$, not the operator parameter $d$.
-
+ 
 ## Research question
-
-Does $d^{*}$ remain invariant across the volatility states inside each VIX-defined regime when the FFD operator specification is held fixed?
-
+ 
+Does $d^{*}$ remain invariant across the segments inside each VIX-defined volatility state when the FFD operator specification is held fixed?
+ 
 "Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question concerns the stability of the selected order $d^{*}$, not time variation in a long-memory parameter.
 
 ## Formal hypothesis
-
-For a fixed admissible partition $`\mathcal{P} = \{S_1, \ldots, S_K\}`$ and feature $`j`$, let $`\hat{d}^{\ast}_{j,k}`$ denote the selected order on segment $`S_k`$. The null hypothesis is that the selected order is constant across the partition:
-
+ 
+For a fixed admissible partition $`\mathcal{P} = \{S_1, \ldots, S_K\}`$ of segments and feature $`j`$, let $`\hat{d}^{\ast}_{j,k}`$ denote the selected order on segment $`S_k`$. The null hypothesis is that the selected order is constant across the partition:
+ 
 ```math
 H_{0,j}: \quad d^{\ast}_{j,1} = \cdots = d^{\ast}_{j,K}.
 ```
-
+ 
 The test statistic is the maximum pairwise absolute difference between segment-specific selected orders:
-
+ 
 ```math
 \hat{T}_j = \max_{1 \le k \lt l \le K} \bigl| \hat{d}^{\ast}_{j,k} - \hat{d}^{\ast}_{j,l} \bigr|.
 ```
-
+ 
 Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn independently within each fixed segment, with the bootstrap statistic recentred around $`\hat{d}^{\ast}_{j,k}`$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
-
+ 
 The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
-
-
+ 
 ## Pipeline
-
-1. Structural-break detection on VIX defines the parent regimes.
-2. NP-MOJO segmentation within each regime defines the child volatility states.
+ 
+1. CUSUM-based structural-break detection on VIX defines the parent volatility states.
+2. NP-MOJO segmentation within each state defines the child segments.
 3. The FFD operator is applied with fixed specification.
 4. The minimum admissible order $d^{*}$ is selected per segment under the ADF rule.
 5. The feature-level statistic $\hat T_j$ is computed across the admissible partition.
 6. Stationary-bootstrap inference is conducted under fixed boundaries.
 7. Selected operators are recorded in an anonymised frozen-operator registry.
-
-Regime construction is a retrospective in-sample characterisation. Downstream operator use is separate, under train-only freezing, causal alignment, and sealed evaluation.
+8. 
+State construction is a retrospective in-sample characterisation. Downstream operator use is separate, under train-only freezing, causal alignment, and sealed evaluation.
 
 ## Scope of inference
-
-The test is conditional on the supplied boundaries. The volatility-state partition is treated as an input to the operator-stability test, not as an object jointly estimated with $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
-
+ 
+The test is conditional on the supplied boundaries. The segment partition is treated as an input to the stability test for $d^{*}$, not as an object jointly estimated with $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
+ 
 Caveats:
-
+ 
 - $d^{*}$ is grid-valued; $\hat T_j$ inherits the grid resolution.
 - The bootstrap resamples independently within segments; changepoint uncertainty is not propagated.
 - Per-feature tests are reported. No multiplicity adjustment is applied.
