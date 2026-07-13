@@ -6,9 +6,10 @@
 
 ## Overview
 
-This repository is a research compendium for testing whether the order d* selected for the fixed-width fractional differentiation (FFD) operator is stable across volatility segmentation conditioned on the VIX. The object of inference is the stability of the selected order d*; the operator specification is held fixed. The study does not estimate a latent long-memory parameter.
-
-The workflow conditions on CUSUM-defined VIX volatility states and tests the stability of d* across NP-MOJO segments within each state. Inference is conducted by stationary bootstrap. Predictive evaluation is supporting material only, under a train-only frozen-operator protocol and a sealed out-of-sample design.
+This repository is a research compendium for testing whether the order d* selected for the fixed-width fractional differentiation (FFD) operator remains stable across volatility segmentation conditioned on the VIX. The operator specification is held fixed, and the study does not estimate a latent long-memory parameter. The tested quantity is the selected order d*.
+ 
+The workflow conditions on CUSUM-defined VIX volatility states and tests the stability of d* across NP-MOJO segments within each state. Evidence against the null hypothesis is obtained by stationary bootstrap. Predictive evaluation is a secondary assessment of practical consequences, under a train-only frozen-operator protocol and a sealed out-of-sample design.
+ 
 
 ## Terminology
  
@@ -53,8 +54,8 @@ The public repository reports anonymised registry outputs and bucketed bootstrap
 2. NP-MOJO segmentation within each state defines the child segments.
 3. The FFD operator is applied with fixed specification.
 4. The minimum admissible order $d^{*}$ is selected per segment under the ADF rule.
-5. The feature-level statistic $\hat T_j$ is computed across the admissible partition.
-6. Stationary-bootstrap inference is conducted under fixed boundaries.
+5. The feature-level statistic $\hat T_i$ is computed across the admissible partition.
+6. The stationary bootstrap evaluates the statistic under fixed segment boundaries.
 7. Selected operators are recorded in an anonymised frozen-operator registry.
 State construction is a retrospective in-sample characterisation. Downstream operator use is separate, under train-only freezing, causal alignment, and sealed evaluation.
  
