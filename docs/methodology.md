@@ -10,47 +10,47 @@ The public release supports methodological review and reproducibility. It exclud
 
 | Term | Definition |
 |---|---|
-| $`d`$ | Fractional differencing order. A parameter of the FFD operator, evaluated on a finite grid $`\mathcal{D}`$. |
+| $`d`$ | The long memory parameter  |
 | $`d^{\ast}`$ | Minimum value $`d \in \mathcal{D}`$ such that the augmented Dickey–Fuller (ADF) test rejects the unit-root null at level $`\alpha`$ on the FFD-transformed series. |
 | FFD operator | Fixed-width fractional differencing operator with truncation threshold $`\tau`$, applied to one univariate series. |
-| **Regime** | Contiguous time interval delimited by structural breaks detected on the VIX series. Parent partition. Exogenous to the feature under test. |
-| **Volatility state** (segment) | Contiguous time interval inside one regime, delimited by change points detected by NP-MOJO. Child partition. |
-| Admissible partition | Either the parent regime partition or a volatility-state partition nested in a fixed regime. The test is conditional on one admissible partition. |
-| d-invariance hypothesis | Null hypothesis that the selected order $`d^{\ast}`$ is equal across the $`K`$ units of one admissible partition, with the FFD operator specification held fixed. |
+| **Volatility state (Regime)** | Contiguous time interval delimited by structural breaks detected on the VIX series. Parent partition. Exogenous to the feature under test. |
+| **Segment**  | Contiguous time interval inside one regime, delimited by change points detected by NP-MOJO. Child partition. |
+| Admissible partition | A fixed collection of ordered, non-overlapping units supplied to the test. In the empirical analysis, it comprises the four NP-MOJO segments nested within the two VIX-defined volatility states. The test is conditional on this partition. |
+| d-invariance hypothesis | Null hypothesis that the selected order $`d^{\ast}`$ is equal across the $`K`$ units of the admissible partition, with the FFD operator specification held fixed. |
 
 The hypothesis is stated at the level of the selected order $`d^{\ast}`$, not the operator parameter $`d`$. The two are distinct objects: $`d`$ is a parameter of the operator; $`d^{\ast}`$ is the data-dependent quantity produced by a fixed selection rule.
 
 ## Research object
 
-Let $`X^{(j)}_t`$ denote feature $`j`$ at time $`t`$. The pipeline tests whether the selected minimum stationarity-inducing FFD order remains stable across the units of a fixed admissible partition.
+Let $`X^{(j)}_t`$ denote feature $`j`$ at time $`t`$. The pipeline tests whether the selected minimum stationarity-inducing FFD order remains stable across  states. 
 
-The inferential target is a preprocessing operator. The analysis does not interpret $`d^{\ast}`$ as a structural long-memory parameter. It treats $`d^{\ast}`$ as the output of a predefined transformation-selection rule.
+The objecti of study is a pre processing operator. The analysis does not interpret $`d^{\ast}`$ as long-memory parameter of an ARFIMA model.  
 
 ## Boundary hierarchy
 
 The pipeline uses a two-level boundary hierarchy.
 
-First, structural-break analysis on VIX defines parent regimes. Regimes are contiguous, ordered, and non-overlapping.
+First, structural-break analysis on VIX defines parent volatility-states also named regimes. States are contiguous, ordered, and non-overlapping.
 
-Second, NP-MOJO segmentation may be applied inside each regime. The resulting child windows are called volatility states or segments. A volatility state lies inside one regime and cannot cross a regime boundary.
+Second, NP-MOJO segmentation may be applied inside each regime. The resulting child windows are called segments. A segment lies inside a state and cannot cross its boundary.
 
 ```text
-VIX-defined regime  (parent)
-  └── NP-MOJO volatility state  (child)
+VIX-defined volatility states (Regimes)  (parent)
+  └── NP-MOJO segments  (child)
 ```
 
-The d-invariance test can be applied to either admissible partition: the parent regime partition, or a child volatility-state partition inside one fixed regime. The test is always conditional on the partition supplied to it.
+The d-invariance test can be applied to either admissible partition: the parent or a child partition inside one fixed regime. The test is always conditional on the partition supplied to it.
 
 ## Pipeline overview
 
 The public pipeline is organised in seven stages:
 
-1. Structural-break detection on VIX defines the parent regimes.
-2. NP-MOJO segmentation within each regime defines the child volatility states.
+1. Structural-break detection on VIX defines the parent volatility states or regimes.
+2. NP-MOJO segmentation within each regime defines the child.
 3. The FFD operator is applied with fixed specification.
 4. The minimum admissible order $d^{*}$ is selected per segment under the ADF rule.
 5. The feature-level statistic $\hat{T}_j$ is computed across the admissible partition.
-6. Stationary-bootstrap inference is conducted under fixed boundaries.
+6. Stationary-bootstrap is conducted under fixed boundaries.
 7. Selected operators may be recorded in an anonymised frozen-operator registry.
 
 Regime construction is retrospective in-sample characterisation. Downstream predictive use is separate, under train-only operator freezing, causal feature alignment, and sealed evaluation.
@@ -63,15 +63,15 @@ This stage is descriptive. Its role is to define parent windows within which $`d
 
 ## Within-regime segmentation
 
-Inside each regime, NP-MOJO may be applied to define child volatility states. NP-MOJO is a nonparametric segmentation method that detects change points in marginal distributions and nonlinear serial dependence without pre-specifying the type of change (McGonigle and Cho, 2025).
+Inside each regime, NP-MOJO may be applied to define child segments. NP-MOJO is a nonparametric segmentation method that detects change points in marginal distributions and nonlinear serial dependence without pre-specifying the type of change (McGonigle and Cho, 2025).
 
-NP-MOJO is upstream to the FFD layer: it produces boundaries, which the FFD layer consumes. The resulting volatility states define local windows on which segment-specific selected orders are computed.
+NP-MOJO is upstream to the FFD layer: it produces boundaries, which the FFD layer consumes. The resulting segmentation define local windows on which segment-specific selected orders are computed.
 
 ## Fixed-width fractional differencing
 
-For each feature $`j`$, the series is transformed by an FFD operator with parameter $`d`$. The operator is a preprocessing device intended to reduce non-stationarity while preserving long-range dependence under a fixed admissibility rule (López de Prado, 2018, Chapter 5).
+For each feature $`j`$, the series is transformed by an FFD operator with parameter $`d`$. The operator is a preprocessing device intended to reduce non-stationarity while preserving long-range dependence (López de Prado, 2018, Chapter 5).
 
-The implementation follows the fixed-width specification with truncation threshold $`\tau`$, producing finite impulse-response weights. Weights are applied per segment; the FFD operator is never applied across an admissible partition boundary.
+The implementation follows the fixed-width specification with truncation threshold $`\tau`$. Weights are applied per segment. The FFD operator is never applied across an admissible partition boundary.
 
 ## Selection of $d^{\ast}$
 
@@ -110,9 +110,9 @@ The observed test statistic is the maximum pairwise absolute difference between 
 \hat{T}_j = \max_{1 \le k \lt l \le K} \bigl| \hat{d}^{\ast}_{j,k} - \hat{d}^{\ast}_{j,l} \bigr|.
 ```
 
-## Stationary-bootstrap inference
+## Stationary-bootstrap 
 
-Inference is conducted by stationary bootstrap (Politis and Romano, 1994), conditional on the fixed admissible partition.
+Inference is conducted using the stationary bootstrap of Politis and Romano (1994), with the admissible partition held fixed throughout resampling.
 
 For $`b = 1, \ldots, B`$:
 
@@ -144,17 +144,13 @@ The decision rule rejects $`H_{0,j}`$ at level $`\alpha`$ if $`\hat{p}_j < \alph
 
 ## Scope and limitations
 
-The test is conditional on the fixed admissible partition $`\mathcal{P}`$.
+The test is conditional on the fixed admissible partition $`\mathcal{P}`$, defined upstream from VIX: CUSUM identifies the volatility states, and NP-MOJO identifies the segments within each state. Boundary uncertainty is not propagated. During bootstrap resampling, neither the VIX structural breaks nor the NP-MOJO change points are re-estimated; all segment boundaries remain fixed.
 
-Boundary uncertainty is not propagated. The bootstrap does not re-estimate VIX structural breaks. The bootstrap does not re-run NP-MOJO. Segment boundaries remain fixed during resampling.
+Resampling is conducted independently within each segment. This preserves local serial dependence but does not reproduce dependence across segment boundaries. Consequently, rejection indicates instability of d* under the imposed partition, but cannot distinguish operator instability from partition misspecification or boundary uncertainty. The result must therefore be interpreted conditionally on the VIX partition, the NP-MOJO segmentation, and the fixed operator specification.
 
-Resampling is independent within segments. Under the null, this is innocuous; under boundary misspecification, the test conflates operator instability with partition misspecification.
+The selected order $`\hat{d}^{\ast}_{j,k}`$ is grid-valued. The statistics $`\hat{T}_j`$ and $`T^{\ast(b)}_j`$ inherit the grid resolution. The bootstrap p-value is therefore discrete. Tests are conducted feature by feature, without multiplicity adjustment.
 
-The selected order $`\hat{d}^{\ast}_{j,k}`$ is grid-valued. The statistics $`\hat{T}_j`$ and $`T^{\ast(b)}_j`$ inherit the grid resolution. The bootstrap p-value is therefore a discrete random variable.
-
-Per-feature tests are reported. Multiplicity adjustment for joint conclusions across features is not part of this test.
-
-The public repository exposes the test design. It excludes private calibration schedules, raw p-values, bootstrap seeds, private feature names, private feature maps, and empirical results reserved for the research manuscript.
+The public repository documents the test design and implementation for methodological audit. It excludes licensed data, confidential calibration settings, identifiable feature mappings, bootstrap seeds, raw empirical outputs, and results reserved for the manuscript.
 
 ## Interpretation
 
@@ -164,11 +160,11 @@ This interpretation is operational, not structural. A rejection does not by itse
 
 ## Non-claims
 
-- The pipeline does not estimate the true fractional-integration parameter of the data-generating process.
+- The pipeline does not estimate the structural fractional-integration parameter of the data-generating process.
 - A rejection of d-invariance does not identify a specific economic mechanism.
-- The repository does not publish or replicate a trading signal.
+- The repository does not disclose or replicate a trading signal.
 
-The claim is narrower: under a fixed FFD selection rule and a fixed admissible partition, the selected preprocessing order may or may not remain stable across segments.
+The claim is limited to whether the selected preprocessing order d* remains stable across segments under a fixed FFD selection rule and a fixed admissible partition.
 
 ## Public registry
 
