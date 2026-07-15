@@ -1,7 +1,7 @@
 """Synthetic end-to-end example of the d-invariance pipeline.
 
 Generates a synthetic feature, segments it under a two-level boundary
-hierarchy (parent regimes; child volatility states), selects d* per segment,
+hierarchy (parent regimes; child segments), selects d* per segment,
 computes the d-invariance statistic, and writes a schema-compliant
 frozen-operator registry to disk.
 
@@ -78,8 +78,8 @@ def synthesise_regime_partition(series: pd.Series) -> pd.DataFrame:
     return regimes
 
 
-def synthesise_volatility_states(series: pd.Series, regime: pd.Series) -> pd.DataFrame:
-    """Two child volatility states inside the supplied regime."""
+def synthesise_segments(series: pd.Series, regime: pd.Series) -> pd.DataFrame:
+    """Two child segments inside the supplied regime."""
     window = series.loc[regime["start"] : regime["end"]]
     if len(window) < 100:
         return pd.DataFrame()
@@ -149,9 +149,9 @@ def build_registry(series: pd.Series, feature_id: str) -> pd.DataFrame:
             }
         )
 
-    # Child volatility states
+    # Child 
     for _, regime in regimes.iterrows():
-        states = synthesise_volatility_states(series, regime)
+        states = synthesise_segments(series, regime)
         for order, state in enumerate(states.itertuples(), start=1):
             estimate = estimate_on_window(
                 series, state.start, state.end, feature_id
