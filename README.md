@@ -14,19 +14,19 @@ The workflow first identifies volatility states by applying cumulative‑sum (CU
  
 | Term | Definition |
 |---|---|
-| $d$ | Fractional differentiation order; a parameter of the FFD operator on grid $\mathcal{D}$. |
-| $d^{*}$ | Minimum $d \in \mathcal{D}$ for which the augmented Dickey–Fuller (ADF) test rejects the unit-root null at level $\alpha$. |
-| **Volatility state** | Time interval delimited by CUSUM-detected structural breaks on VIX. Parent partition, exogenous to the feature. |
-| **Segment** | Time interval inside one volatility state, delimited by NP-MOJO change points. Child partition. |
-| Admissible partition | The state partition, or the segment partition inside a fixed state. |
+| $d$ | Fractional differencing parameter in an ARFIMA model. It characterises the persistence of the assumed data-generating process. |
+| $d^{*}$ | Fractional differentiation operator. The minimum $d \in \mathcal{D}$ for which the augmented Dickey–Fuller (ADF) test rejects the unit-root null at level $\alpha$. |
+| **Volatility state (Regimes)** | Time interval delimited by CUSUM-detected structural breaks on VIX. Parent partition, exogenous to the feature. |
+| **Segment** | Contiguous child interval within a volatility state, delimited by an NP-MOJO change point.|
+| Admissible partition | Fixed collection of ordered, non-overlapping units supplied to the test. In the empirical analysis, it comprises the four segments nested within the two VIX-defined volatility states. |
  
-The hypothesis is formulated for the selected order  $d^{*}$, rather than for the fractional differencing parameter $d$ of the ARFIMA model.
+The hypothesis is formulated for the selected order  $d^{*}$.
  
 ## Research question
  
-Does the selected order $d^{*}$ of a fixed-width fractional differencing operator remain invariant across segments within each VIX-defined volatility state, when the operator specification is held fixed?
+Does the selected order $d^{*}$ of the fixed-width fractional differencing remain invariant across segments within each VIX-defined volatility state?
  
-"Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question is about the stability of the selected order $d^{*}$, not about time variation in a long-memory parameter.
+The operator specification is held fixed across segments: the FFD implementation, truncation, threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based selection rule are held constant across segments, only the data subset changes. The question is about the stability of the selected order $d^{*}$, not about time variation in the ARFIMA long-memory parameter d. 
  
 ## Formal hypothesis
  
@@ -41,8 +41,8 @@ The test statistic is the maximum pairwise absolute difference between segment-s
 ```math
 \hat{T}_j = \max_{1 \le k \lt l \le K} \bigl| \hat{d}^{\ast}_{j,k} - \hat{d}^{\ast}_{j,l} \bigr|.
 ```
- 
-Inference is conducted by stationary bootstrap (Politis and Romano, 1994), drawn independently within each fixed segment, with the bootstrap statistic recentred around $`\hat{d}^{\ast}_{j,k}`$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
+
+The stationary-bootstrap procedure of Politis and Romano (1994) is applied independently within each fixed segment. Each bootstrap order is recentred around $`\hat{d}^{\ast}_{j,k}`$. The full statement, including bootstrap parameters and decision rule, is provided in `docs/methodology.md`.
  
 The public repository reports anonymised registry outputs and bucketed bootstrap evidence. Raw p-values and private calibration are excluded.
  
