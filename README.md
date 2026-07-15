@@ -6,11 +6,10 @@
 
 ## Overview
 
-This repository is a research compendium for testing whether the order d* selected for the fixed-width fractional differentiation (FFD) operator remains stable across volatility segmentation conditioned on the VIX. The operator specification is held fixed, and the study does not estimate a latent long-memory parameter. The tested quantity is the selected order d*.
- 
-The workflow conditions on CUSUM-defined VIX volatility states and tests the stability of d* across NP-MOJO segments within each state. Evidence against the null hypothesis is obtained by stationary bootstrap. Predictive evaluation is a secondary assessment of practical consequences, under a train-only frozen-operator protocol and a sealed out-of-sample design.
- 
+This repository is a research compendium for testing whether the order d* selected for the fixed-width fractional differentiation (FFD) operator remains stable across volatility segmentation conditioned on the VIX. The FFD specification (implementation, truncation threshold, grid and ADF rule) is fixed in advance; only the data subset changes, and the object under test is the selected order d*.
 
+The workflow first identifies volatility states by applying cumulative‑sum (CUSUM) structural‑break tests to VIX, then segments each state using the NP‑MOJO change‑point method. Within this fixed segmentation, it evaluates how d* varies across segments using a stationary bootstrap (Politis and Romano 1994). A separate forecasting experiment, run under a train‑only frozen‑operator protocol and a sealed out‑of‑sample design, assesses how any instability in d* affects model calibration.
+ 
 ## Terminology
  
 | Term | Definition |
@@ -21,13 +20,13 @@ The workflow conditions on CUSUM-defined VIX volatility states and tests the sta
 | **Segment** | Time interval inside one volatility state, delimited by NP-MOJO change points. Child partition. |
 | Admissible partition | The state partition, or the segment partition inside a fixed state. |
  
-The hypothesis is stated at the level of the selected order $d^{*}$, not the operator parameter $d$.
+The hypothesis is formulated for the selected order  $d^{*}$, rather than for the fractional differencing parameter $d$ of the ARFIMA model.
  
 ## Research question
  
-Does $d^{*}$ remain invariant across the segments inside each VIX-defined volatility state when the FFD operator specification is held fixed?
+Does the selected order $d^{*}$ of a fixed-width fractional differencing operator remain invariant across segments within each VIX-defined volatility state, when the operator specification is held fixed?
  
-"Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question concerns the stability of the selected order $d^{*}$, not time variation in a long-memory parameter.
+"Fixed operator specification" denotes that the FFD implementation, truncation threshold $\tau$, candidate grid $\mathcal{D}$, and ADF-based stationarity-selection rule are held constant across segments; only the data subset changes. The question is about the stability of the selected order $d^{*}$, not about time variation in a long-memory parameter.
  
 ## Formal hypothesis
  
@@ -61,7 +60,7 @@ State construction is a retrospective in-sample characterisation. Downstream ope
  
 ## Scope of inference
  
-The test is conditional on the supplied boundaries. The segment partition is treated as an input to the stability test for $d^{*}$, not as an object jointly estimated with $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
+The test is conditional on the supplied boundaries. The segment partition is treated as an input to the stability test for $d^{*}$. Boundary sensitivity and joint uncertainty are reserved for the manuscript in progress.
  
 Caveats:
  
